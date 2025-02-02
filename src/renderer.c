@@ -2,8 +2,8 @@
 
 void ETHER_render(ETHER_state *state)
 {
-    SDL_SetRenderDrawColor(state->sdl_renderer, 25, 25, 25, 255);
-    SDL_RenderClear(state->sdl_renderer);
+    // SDL_SetRenderDrawColor(state->sdl_renderer, 25, 25, 25, 255);
+    // SDL_RenderClear(state->sdl_renderer);
 
     ETHER_render_entities(state);
     ETHER_render_blocks(state);
@@ -22,7 +22,7 @@ void ETHER_render_entities(ETHER_state *state)
         sdl_rect.y = state->entities->transforms[i].pos.y;
         sdl_rect.w = ETHER_ENTITY_SIZE;
         sdl_rect.h = ETHER_ENTITY_SIZE;
-        SDL_RenderRect(state->sdl_renderer, &sdl_rect);
+        SDL_RenderFillRect(state->sdl_renderer, &sdl_rect);
     }
 }
 
@@ -38,5 +38,9 @@ void ETHER_render_blocks(ETHER_state *state)
         sdl_rect.w = state->blocks->rects[i].w;
         sdl_rect.h = state->blocks->rects[i].h;
         SDL_RenderFillRect(state->sdl_renderer, &sdl_rect);
+        SDL_SetRenderDrawColor(state->sdl_renderer, 25, 25, 25, 255);
+        char num[6] = {0};
+        snprintf(num, 6, "%u", i);
+        SDL_RenderDebugText(state->sdl_renderer, sdl_rect.x + 10, sdl_rect.y + 10, num);
     }
 }

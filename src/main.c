@@ -19,19 +19,19 @@ int main()
     SDL_SetRenderVSync(sdl_renderer, 1);
 
     ETHER_entities entities;
-    entities.len = 1;
-    entities.cap = 1;
+    entities.len = 16;
+    entities.cap = 16;
     entities.transforms = malloc(entities.cap * sizeof(*entities.transforms));
 
     for (ETHER_entity_id_t i = 0; i < entities.len; i++)
     {
-        ETHER_vec_u16 pos;
+        ETHER_vec pos;
         pos.x = rand() % (ETHER_WORLD_WIDTH - ETHER_ENTITY_SIZE);
         pos.y = rand() % (ETHER_WORLD_HEIGHT - ETHER_ENTITY_SIZE);
-        ETHER_vec_s16 vel;
+        ETHER_vec vel;
         // constant taxicab speed
-        uint16_t v = 1;
-        uint16_t vx = rand() % v;
+        uint16_t v = 32;
+        uint16_t vx = 16;//rand() % v;
         uint16_t vy = v - vx;
         vel.x = vx * (1 - 2 * (rand() % 2));
         vel.y = vy * (1 - 2 * (rand() % 2));
@@ -42,20 +42,31 @@ int main()
     }
 
     ETHER_blocks blocks;
-    blocks.len = 1;
-    blocks.cap = 1;
+    blocks.len = 128;
+    blocks.cap = 128;
     blocks.rects = malloc(blocks.cap * sizeof(*blocks.rects));
     blocks.counts = malloc(blocks.cap * sizeof(*blocks.counts));
     
     srand(time(NULL));
 
-    for (ETHER_block_id_t i = 0; i < blocks.len; i++)
+    // lol kinda hacky approach to world borders, but it works i guess :P
+    // maybe there could be an easter egg where the balls break out of the
+    // world borders...
+
+    blocks.counts[0] = UINT32_MAX;
+    blocks.counts[1] = UINT32_MAX;
+    blocks.counts[2] = UINT32_MAX;
+    blocks.counts[3] = UINT32_MAX;
+    blocks.rects[0] = (ETHER_rect) { 0, 0, 0, ETHER_WORLD_HEIGHT };
+    blocks.rects[1] = (ETHER_rect) { 0, 0, ETHER_WORLD_WIDTH, 0 };
+    blocks.rects[2] = (ETHER_rect) { 0, ETHER_WORLD_HEIGHT, ETHER_WORLD_WIDTH, 0 };
+    blocks.rects[3] = (ETHER_rect) { ETHER_WORLD_WIDTH, 0, 0, ETHER_WORLD_HEIGHT };
+
+    for (ETHER_block_id_t i = 4; i < blocks.len; i++)
     {
-        ETHER_rect_u16 rect;
-        // rect.x = (rand() % (ETHER_WORLD_WIDTH / ETHER_BLOCK_WIDTH)) * ETHER_BLOCK_WIDTH;
-        // rect.y = (rand() % (ETHER_WORLD_HEIGHT / ETHER_BLOCK_HEIGHT)) * ETHER_BLOCK_HEIGHT;
-        rect.x = (rand() % (ETHER_WORLD_WIDTH));
-        rect.y = (rand() % (ETHER_WORLD_HEIGHT));
+        ETHER_rect rect;
+        rect.x = (rand() % (ETHER_WORLD_WIDTH / ETHER_BLOCK_WIDTH)) * ETHER_BLOCK_WIDTH;
+        rect.y = (rand() % (ETHER_WORLD_HEIGHT / ETHER_BLOCK_HEIGHT)) * ETHER_BLOCK_HEIGHT;
         rect.w = ETHER_BLOCK_WIDTH;
         rect.h = ETHER_BLOCK_HEIGHT;
         ETHER_block_count_t count = 100;

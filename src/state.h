@@ -12,6 +12,9 @@ struct ETHER_state
     SDL_Window *sdl_window;
     SDL_Renderer *sdl_renderer;
     ETHER_bool quit;
+    ETHER_bool smth;
+    ETHER_bool smth_state;
+    ETHER_bool smth_last;
     uint32_t tick;
     struct ETHER_entities *entities;
     struct ETHER_blocks *blocks;
@@ -35,8 +38,8 @@ struct ETHER_entities
 
 struct ETHER_entity_transform
 {
-    ETHER_vec_u16 pos;
-    ETHER_vec_s16 vel;
+    ETHER_vec pos;
+    ETHER_vec vel;
 };
 
 /* blocks */
@@ -53,7 +56,7 @@ struct ETHER_blocks
     ETHER_block_id_t len;
     ETHER_block_id_t cap;
 
-    ETHER_rect_u16 *rects;
+    ETHER_rect *rects;
     ETHER_block_count_t *counts;
 };
 

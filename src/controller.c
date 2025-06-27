@@ -6,7 +6,6 @@ void ETHER_update(ETHER_state *state)
     ETHER_update_entities_and_blocks(state);
     state->tick++;
 }
-
 void ETHER_update_events(ETHER_state *state)
 {
     SDL_Event event;
@@ -14,8 +13,15 @@ void ETHER_update_events(ETHER_state *state)
     {
         ETHER_update_event(state, &event);
     }
-    
+
+    ETHER_update_mouse(state);
 }
+
+void ETHER_update_mouse(ETHER_state *state)
+{
+    SDL_GetMouseState(&state->mouse_x, &state->mouse_y);
+}
+
 
 void ETHER_update_event(ETHER_state *state, SDL_Event *event)
 {
@@ -65,6 +71,7 @@ ETHER_rect ETHER_get_sweep(ETHER_rect rect, ETHER_vec vel)
 #define ETHER_DEBUG_COLLISION_LINES // ALSO CHANGE renderer.c ETHER_DEBUG_COLLISION_LINES
 // #define ETHER_DEBUG_COLLISION_STEP
 #define ETHER_DEBUG_COLLISION_SMOOTH
+#define ETHER_DEBUG_COLLISION_MOUSE
 
 void ETHER_update_entities_and_blocks(ETHER_state *state)
 {
@@ -124,7 +131,7 @@ void ETHER_update_entities_and_blocks(ETHER_state *state)
 #endif
             
             ETHER_intersection_data hit = {1, ETHER_INTERSECTION_SIDE_NONE};
-            ETHER_block_id_t hit_block;
+            ETHER_block_id_t hit_block = -1;
 
             for (ETHER_block_id_t k = 0; k < sweep_blocks_len; k++)
             {
@@ -162,6 +169,7 @@ void ETHER_update_entities_and_blocks(ETHER_state *state)
 
             }
 
+#ifndef ETHER_DEBUG_COLLISION_MOUSE
 #ifndef ETHER_DEBUG_COLLISION_SMOOTH
 #ifdef ETHER_DEBUG_COLLISION_STEP
             if ((hit.t < 1) && state->smth)
@@ -183,6 +191,7 @@ void ETHER_update_entities_and_blocks(ETHER_state *state)
                 // printf("%u\n", --(state->blocks->counts[hit_block]));
             }
 #endif
+#endif
 
             float delta_x = vel.x * hit.t;
             float delta_y = vel.y * hit.t;
@@ -201,6 +210,7 @@ void ETHER_update_entities_and_blocks(ETHER_state *state)
             vel_sign_x *= mult_x;
             vel_sign_y *= mult_y;
 
+#ifndef ETHER_DEBUG_COLLISION_MOUSE
 #ifdef ETHER_DEBUG_COLLISION_SMOOTH
 #ifdef ETHER_DEBUG_COLLISION_STEP
             if (j == 0 && state->smth)
@@ -234,6 +244,7 @@ void ETHER_update_entities_and_blocks(ETHER_state *state)
                 }
             }
 #endif
+#endif
 
 #ifdef ETHER_DEBUG_COLLISION_LINES
             frect = FRECT(rect);
@@ -243,6 +254,7 @@ void ETHER_update_entities_and_blocks(ETHER_state *state)
 
         }
 
+#ifndef ETHER_DEBUG_COLLISION_MOUSE
 #ifndef ETHER_DEBUG_COLLISION_SMOOTH
 #ifdef ETHER_DEBUG_COLLISION_STEP
         if (state->smth)
@@ -252,6 +264,10 @@ void ETHER_update_entities_and_blocks(ETHER_state *state)
             state->entities->transforms[i].vel.x *= vel_sign_x;
             state->entities->transforms[i].vel.y *= vel_sign_y;
         }
+#endif
+#else
+        state->entities->transforms[i].pos.x = state->mouse_x * 2;
+        state->entities->transforms[i].pos.y = state->mouse_y * 2;
 #endif
     }
 }

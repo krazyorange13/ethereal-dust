@@ -90,6 +90,8 @@ int main()
     state.sdl_renderer = sdl_renderer;
     state.quit = ETHER_FALSE;
     state.tick = 0;
+    state.mouse_x = 0;
+    state.mouse_y = 0;
     state.entities = &entities;
     state.blocks = &blocks;
     state.stats = &stats;

@@ -15,6 +15,7 @@ struct ETHER_state
     ETHER_bool smth;
     ETHER_bool smth_state;
     ETHER_bool smth_last;
+    float mouse_x, mouse_y;
     uint32_t tick;
     struct ETHER_entities *entities;
     struct ETHER_blocks *blocks;

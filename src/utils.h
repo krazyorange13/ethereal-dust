@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <math.h>
+#include <limits.h>
 
 #define ETHER_SCREEN_WIDTH 640
 #define ETHER_SCREEN_HEIGHT 480
@@ -19,6 +20,9 @@ typedef uint8_t ETHER_bool;
 #define ROUND(X) (((X) < (int)(X) + 0.5) ? (int)(X) : (int)(X) + 1)
 #define FLOOR(X) ((int)(X))
 #define NUFFIN(X) (X)
+// non-branching version
+// #define ABS_MASK(X) ((X) >> (sizeof((X)) * CHAR_BIT - 1))
+// #define ABS(X) (((X) + ABS_MASK(X)) ^ ABS_MASK(X))
 #define ABS(X) (((X) < 0) ? -(X) : (X))
 #define SIGN(X) (((X) < 0) ? -1 : 1)
 #define SIGN2(X) (((X) == 0) ? 0 : (((X) < 0) ? -1 : 1))
